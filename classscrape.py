@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import time
 import pickle
 
-root_url = "https://banxessbprod.tru.ca"
+root_url = "ssb.cofc.edu"
 
 def make_3_magic_requests(datecode,subj=False):
 	first_url = (
