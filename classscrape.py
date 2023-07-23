@@ -11,34 +11,34 @@ def make_3_magic_requests(datecode,subj=False):
 		f'{root_url}/StudentRegistrationSsb/ssb/term/termSelection?mode=search'
 	)
 
-	if(not subj):
-		second_url = (
-			f'{root_url}/StudentRegistrationSsb/ssb/searchResults/searchResults'
-			f'?txt_term={datecode}&startDatepicker=&endDatepicker=&pageOffset=0'
-			'&pageMaxSize=500&sortColumn=subjectDescription&sortDirection=asc'
-		)
-	else:
-		second_url = (
-			f'{root_url}/StudentRegistrationSsb/ssb/searchResults/searchResults'
-			f'?txt_subject={subj}&txt_term={datecode}&startDatepicker='
-			'&endDatepicker=&pageOffset=0&pageMaxSize=500'
-			'&sortColumn=subjectDescription&sortDirection=asc'
-		)
+	if not subj: second_url = (
+		f'{root_url}/StudentRegistrationSsb/ssb/searchResults/searchResults'
+		f'?txt_term={datecode}&startDatepicker=&endDatepicker=&pageOffset=0'
+		'&pageMaxSize=500&sortColumn=subjectDescription&sortDirection=asc'
+	)
+	else: second_url = (
+		f'{root_url}/StudentRegistrationSsb/ssb/searchResults/searchResults'
+		f'?txt_subject={subj}&txt_term={datecode}&startDatepicker='
+		'&endDatepicker=&pageOffset=0&pageMaxSize=500'
+		'&sortColumn=subjectDescription&sortDirection=asc'
+	)
 
 	header = {
-		'Host':root_url,
+		'Accept':'application/json, text/javascript, */*; q=0.01',
+		'Accept-Encoding':'gzip, deflate, br',
+		'Accept-Language':'en-CA,en-GB;q=0.9,en-US;q=0.8,en;q=0.7',
+		'Cookie':''
 		'Connection':'keep-alive',
-		#'Accept':'application/json, text/javascript, */*; q=0.01',
-		'X-Synchronizer-Token':'',
-		'X-Requested-With':'XMLHttpRequest',
+		'Host':root_url,
+		'Referer':(
+			f'{root_url}/StudentRegistrationSsb/ssb/classSearch/classSearch' 
+		),
 		'User-Agent':(
 			'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
 			'(KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36'
 		),
-		'Referer':f'{root_url}/StudentRegistrationSsb/ssb/classSearch/classSearch',
-		'Accept-Encoding':'gzip, deflate, br',
-		'Accept-Language':'en-CA,en-GB;q=0.9,en-US;q=0.8,en;q=0.7',
-		'Cookie':''
+		'X-Synchronizer-Token':'',
+		'X-Requested-With':'XMLHttpRequest',
 	}
 
 	header2 = {
