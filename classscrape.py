@@ -8,16 +8,16 @@ root_url = "ssb.cofc.edu"
 
 def make_3_magic_requests(datecode,subj=False):
 	first_url = (
-		f'{root_url}/StudentRegistrationSsb/ssb/term/termSelection?mode=search'
+		f'https://{root_url}/StudentRegistrationSsb/ssb/term/termSelection?mode=search'
 	)
 
 	if not subj: second_url = (
-		f'{root_url}/StudentRegistrationSsb/ssb/searchResults/searchResults'
+		f'https://{root_url}/StudentRegistrationSsb/ssb/searchResults/searchResults'
 		f'?txt_term={datecode}&startDatepicker=&endDatepicker=&pageOffset=0'
 		'&pageMaxSize=500&sortColumn=subjectDescription&sortDirection=asc'
 	)
 	else: second_url = (
-		f'{root_url}/StudentRegistrationSsb/ssb/searchResults/searchResults'
+		f'https://{root_url}/StudentRegistrationSsb/ssb/searchResults/searchResults'
 		f'?txt_subject={subj}&txt_term={datecode}&startDatepicker='
 		'&endDatepicker=&pageOffset=0&pageMaxSize=500'
 		'&sortColumn=subjectDescription&sortDirection=asc'
@@ -27,7 +27,7 @@ def make_3_magic_requests(datecode,subj=False):
 		'Accept':'application/json, text/javascript, */*; q=0.01',
 		'Accept-Encoding':'gzip, deflate, br',
 		'Accept-Language':'en-CA,en-GB;q=0.9,en-US;q=0.8,en;q=0.7',
-		'Cookie':''
+		'Cookie':'',
 		'Connection':'keep-alive',
 		'Host':root_url,
 		'Referer':(
@@ -42,7 +42,7 @@ def make_3_magic_requests(datecode,subj=False):
 	}
 
 	header2 = {
-		** header1,
+		** header,
 		'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8',
 		'Accept':'*/*',
 	}
@@ -61,7 +61,7 @@ def make_3_magic_requests(datecode,subj=False):
 	header2['X-Synchronizer-Token'] = token
 	header2['Cookie'] = 'JSESSIONID'+'='+my_session.cookies['JSESSIONID']
 
-	my_session.post(f'{root_url}/StudentRegistrationSsb/ssb/term/search?mode=search',data='term={}&studyPath=&studyPathText=&startDatepicker=&endDatepicker='.format(datecode),headers=header2)
+	my_session.post(f'https://{root_url}/StudentRegistrationSsb/ssb/term/search?mode=search',data='term={}&studyPath=&studyPathText=&startDatepicker=&endDatepicker='.format(datecode),headers=header2)
 
 	final = my_session.get(second_url,headers=header)
 	return json.loads(final.text)
