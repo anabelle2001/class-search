@@ -4,37 +4,47 @@ from bs4 import BeautifulSoup
 import time
 import pickle
 
+root_url = "https://banxessbprod.tru.ca"
+
 def make_3_magic_requests(datecode,subj=False):
-	first_url = 'https://banxessbprod.tru.ca/StudentRegistrationSsb/ssb/term/termSelection?mode=search'
+	first_url = (
+		f'{root_url}/StudentRegistrationSsb/ssb/term/termSelection?mode=search'
+	)
+
 	if(not subj):
-		second_url = 'https://banxessbprod.tru.ca/StudentRegistrationSsb/ssb/searchResults/searchResults?txt_term={}&startDatepicker=&endDatepicker=&pageOffset=0&pageMaxSize=500&sortColumn=subjectDescription&sortDirection=asc'.format(datecode)
-	second_url = 'https://banxessbprod.tru.ca/StudentRegistrationSsb/ssb/searchResults/searchResults?txt_subject={}&txt_term={}&startDatepicker=&endDatepicker=&pageOffset=0&pageMaxSize=500&sortColumn=subjectDescription&sortDirection=asc'.format(subj,datecode)
+		second_url = (
+			f'{root_url}/StudentRegistrationSsb/ssb/searchResults/searchResults'
+			f'?txt_term={datecode}&startDatepicker=&endDatepicker=&pageOffset=0'
+			'&pageMaxSize=500&sortColumn=subjectDescription&sortDirection=asc'
+		)
+	else:
+		second_url = (
+			f'{root_url}/StudentRegistrationSsb/ssb/searchResults/searchResults'
+			f'?txt_subject={subj}&txt_term={datecode}&startDatepicker='
+			'&endDatepicker=&pageOffset=0&pageMaxSize=500'
+			'&sortColumn=subjectDescription&sortDirection=asc'
+		)
 
 	header = {
-	'Host':'banxessbprod.tru.ca',
-	'Connection':'keep-alive',
-	'Accept':'application/json, text/javascript, */*; q=0.01',
-	'X-Synchronizer-Token':'',
-	'X-Requested-With':'XMLHttpRequest',
-	'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36',
-	'Referer':'https://banxessbprod.tru.ca/StudentRegistrationSsb/ssb/classSearch/classSearch',
-	'Accept-Encoding':'gzip, deflate, br',
-	'Accept-Language':'en-CA,en-GB;q=0.9,en-US;q=0.8,en;q=0.7',
-	'Cookie':''
+		'Host':root_url,
+		'Connection':'keep-alive',
+		#'Accept':'application/json, text/javascript, */*; q=0.01',
+		'X-Synchronizer-Token':'',
+		'X-Requested-With':'XMLHttpRequest',
+		'User-Agent':(
+			'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+			'(KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36'
+		),
+		'Referer':f'{root_url}/StudentRegistrationSsb/ssb/classSearch/classSearch',
+		'Accept-Encoding':'gzip, deflate, br',
+		'Accept-Language':'en-CA,en-GB;q=0.9,en-US;q=0.8,en;q=0.7',
+		'Cookie':''
 	}
 
 	header2 = {
-	'Host':'banxessbprod.tru.ca',
-	'Connection':'keep-alive',
-	'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8',
-	'Accept':'*/*',
-	'X-Synchronizer-Token':'',
-	'X-Requested-With':'XMLHttpRequest',
-	'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36',
-	'Referer':'https://banxessbprod.tru.ca/StudentRegistrationSsb/ssb/classSearch/classSearch',
-	'Accept-Encoding':'gzip, deflate, br',
-	'Accept-Language':'en-CA,en-GB;q=0.9,en-US;q=0.8,en;q=0.7',
-	'Cookie':''
+		** header1,
+		'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8',
+		'Accept':'*/*',
 	}
 
 
@@ -51,13 +61,13 @@ def make_3_magic_requests(datecode,subj=False):
 	header2['X-Synchronizer-Token'] = token
 	header2['Cookie'] = 'JSESSIONID'+'='+my_session.cookies['JSESSIONID']
 
-	my_session.post('https://banxessbprod.tru.ca/StudentRegistrationSsb/ssb/term/search?mode=search',data='term={}&studyPath=&studyPathText=&startDatepicker=&endDatepicker='.format(datecode),headers=header2)
+	my_session.post(f'{root_url}/StudentRegistrationSsb/ssb/term/search?mode=search',data='term={}&studyPath=&studyPathText=&startDatepicker=&endDatepicker='.format(datecode),headers=header2)
 
 	final = my_session.get(second_url,headers=header)
 	return json.loads(final.text)
 
 def get_subj_set(datecode):
-	url = 'https://banxessbprod.tru.ca/StudentRegistrationSsb/ssb/classSearch/get_subject?searchTerm=&term={}&offset=1&max=500&_=1515716220635'.format(datecode)
+	url = f'{root_url}/StudentRegistrationSsb/ssb/classSearch/get_subject?searchTerm=&term={{}}&offset=1&max=500&_=1515716220635'.format(datecode)
 	class_page = requests.get(url).text
 	subj_list = json.loads(class_page)
 	crses = [i['code'] for i in subj_list]
