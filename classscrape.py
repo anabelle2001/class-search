@@ -69,22 +69,18 @@ def make_3_magic_requests(datecode,subj=False):
 	return json.loads(final.text)
 
 def get_subj_set(datecode):
-	url = f'{root_url}/StudentRegistrationSsb/ssb/classSearch/get_subject?searchTerm=&term={{}}&offset=1&max=500&_=1515716220635'.format(datecode)
+	url = (
+		f'https://{root_url}/StudentRegistrationSsb/ssb/classSearch/'
+		f'get_subject?searchTerm=&term={datecode}&offset=1&max=500&'
+		'_=1515716220635'
+	)
 	class_page = requests.get(url).text
 	subj_list = json.loads(class_page)
 	crses = [i['code'] for i in subj_list]
 	return crses
 
-num = 0
-output = []
-date = '202020'
-#file = open(date+'.pickle','wb') 
-#crses = [i['code'] for i in get_subj_set(date)]
-crses = ['COMP']
-for crse in crses:
-	contents = make_3_magic_requests(date,crse)
-	output.append(json.dumps({crse:contents},indent=4))
+if __name__ == "__main__":
+	date = '202310'
 
-print(output)
-#pickle.dump(output,file)
-#file.close()
+	print(get_subj_set(date))
+	print(make_3_magic_requests(date))
