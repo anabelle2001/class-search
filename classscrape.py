@@ -9,21 +9,9 @@ import pickle
 root_url = "ssb.cofc.edu"
 
 def make_3_magic_requests(datecode,subj=False):
-	first_url = (
-		f'https://{root_url}/StudentRegistrationSsb/ssb/term/termSelection?mode=search'
-	)
+	first_url = f'https://{root_url}/StudentRegistrationSsb/ssb/term/termSelection?mode=search'
 
-	if not subj: second_url = (
-		f'https://{root_url}/StudentRegistrationSsb/ssb/searchResults/searchResults'
-		f'?txt_term={datecode}&startDatepicker=&endDatepicker=&pageOffset=0'
-		'&pageMaxSize=500&sortColumn=subjectDescription&sortDirection=asc'
-	)
-	else: second_url = (
-		f'https://{root_url}/StudentRegistrationSsb/ssb/searchResults/searchResults'
-		f'?txt_subject={subj}&txt_term={datecode}&startDatepicker='
-		'&endDatepicker=&pageOffset=0&pageMaxSize=500'
-		'&sortColumn=subjectDescription&sortDirection=asc'
-	)
+	second_url = f"https://{root_url}/StudentRegistrationSsb/ssb/searchResults/searchResults?{'txt_subject={subj}&' if subj else ''}txt_term={datecode}&startDatepicker=&endDatepicker=&pageOffset=0&pageMaxSize=100&sortColumn=subjectDescription&sortDirection=asc"
 
 	header = {
 		'Accept':'application/json, text/javascript, */*; q=0.01',
@@ -49,8 +37,6 @@ def make_3_magic_requests(datecode,subj=False):
 		'Accept':'*/*',
 	}
 
-
-
 	my_session = requests.Session()
 
 	first = my_session.get(first_url)
@@ -68,19 +54,6 @@ def make_3_magic_requests(datecode,subj=False):
 	final = my_session.get(second_url,headers=header)
 	return json.loads(final.text)
 
-def get_subj_set(datecode):
-	url = (
-		f'https://{root_url}/StudentRegistrationSsb/ssb/classSearch/'
-		f'get_subject?searchTerm=&term={datecode}&offset=1&max=500&'
-		'_=1515716220635'
-	)
-	class_page = requests.get(url).text
-	subj_list = json.loads(class_page)
-	crses = [i['code'] for i in subj_list]
-	return crses
-
 if __name__ == "__main__":
 	date = '202310'
-
-	print(get_subj_set(date))
 	print(make_3_magic_requests(date))
