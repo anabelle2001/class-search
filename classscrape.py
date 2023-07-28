@@ -6,8 +6,6 @@ from bs4 import BeautifulSoup
 import time
 import pickle
 
-root_url = "ssb.cofc.edu"
-
 def createSession(baseURL,datecode):
 	handshakeURL = f'https://{baseURL}/StudentRegistrationSsb/ssb/term/termSelection?mode=search'
 	auth_session = requests.Session()
@@ -48,13 +46,35 @@ def createSession(baseURL,datecode):
 	auth_session.headers = final_headers
 	return auth_session
 
-def first50classes(auth_session,datecode):
+def getClasses(
+	auth_session,
+	datecode,
+	pageMaxSize=50,
+	pageOffset=0
+):
 	subj = None
 
-	second_url = f"https://{root_url}/StudentRegistrationSsb/ssb/searchResults/searchResults?{'txt_subject={subj}&' if subj else ''}txt_term={datecode}&startDatepicker=&endDatepicker=&pageOffset=0&pageMaxSize=100&sortColumn=subjectDescription&sortDirection=asc"
+	second_url = f"https://{root_url}/StudentRegistrationSsb/ssb/searchResults/searchResults?{'txt_subject={subj}&' if subj else ''}txt_term={datecode}&startDatepicker=&endDatepicker=&pageOffset={pageOffset}&pageMaxSize={pageMaxSize}&sortColumn=courseReferenceNumber&sortDirection=asc"
+
 	final = auth_session.get(second_url)
 	return json.loads(final.text)
 
 if __name__ == "__main__":
-	date = '202310'
-	print(first50classes(createSession(root_url,date),date))
+	root_url = "ssb.cofc.edu"
+	date = '202410'
+	session = createSession(root_url,date)
+
+	try: 
+		data = []
+		for i in range(0, 4000, 50):
+			print(f"getting classes for n={i}")
+			nxt = getClasses(session,date,50,i)
+			print(nxt['data'])
+			if not nxt['success']: break
+			data.extend(nxt['data'])
+			time.sleep(3)
+	except Exception as e:
+		print(f"oops: {e}")
+	finally:
+		print(f"<DATA>{data}</DATA>")
+
